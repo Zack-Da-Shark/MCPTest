@@ -1,0 +1,26 @@
+FROM ubuntu:22.04
+
+# RUN EVERYTHING IN 1 GO
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    curl \
+    zstd
+
+# Installs Ollama
+RUN curl -fsSL https://ollama.com/install.sh | sh
+
+RUN pip3 install ollama
+RUN pip3 install arxiv
+
+# Set working directory
+WORKDIR /app
+
+# Copies the code from the file
+COPY . .
+
+# Needed commands to run
+
+CMD bash -c "ollama serve & sleep 5 && ollama pull gemma4:26b && python3 main.py"
+
+# best to run the ollama server as a seperate container, will be needing docker compose
